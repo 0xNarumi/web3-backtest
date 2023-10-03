@@ -8,6 +8,7 @@ import { VelodromeDexDataSource } from './velodromeDex.js';
 import { Uni3DexDataSource } from './univ3Dex.js';
 import { SonneDataSource } from './sonne.js';
 import { JoesV2DexDataSource } from './joesv2Dex.js';
+import { Uni3ArbitrumDataSource } from './univ3Arbitrum.js';
 
 type DataSourceEntry = DataSourceInfo & {
   createSource: (info: DataSourceInfo) => DataSource;
@@ -20,6 +21,12 @@ export const DataSourcesRepo: DataSourceEntry[] = [
     protocol: 'aave',
     resoution: '1h',
     createSource: AaveArbitrumDataSource.create,
+  },
+  {
+    chain: 'arbitrum',
+    protocol: 'uniswap-dex',
+    resoution: '1h',
+    createSource: Uni3ArbitrumDataSource.create,
   },
   {
     chain: 'optimism',

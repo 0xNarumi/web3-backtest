@@ -119,6 +119,12 @@ export class UniV3Position {
   public claimed: number = 0;
   public lpAmount: number = 0;
 
+  // fees for this time step
+  public feeToken0T: number = 0;
+  public feeToken1T: number = 0;
+  public token0Bal: number = 0;
+  public token1Bal: number = 0;
+  
   constructor(
     public amount: number,
     public minRange: number,

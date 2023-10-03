@@ -26,13 +26,18 @@ export class InfluxBatcher<
     this.writePointBatched(point, batchLimit);
   }
 
+  public async writePoints(points: T[], batchLimit: number = 1000) {
+    this.points.push(...points);
+    if (this.points.length > batchLimit) await this.exec();
+  }
+
   public pending() {
     return this.points.length;
   }
 
-  public async exec() {
+  public async exec(force = false) {
     if (this.points.length === 0) return;
-    if (this.lock) return;
+    if (this.lock && !force) return;
     this.lock = true;
     const start = Date.now();
     await super.writePoints(this.points);

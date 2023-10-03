@@ -136,6 +136,7 @@ export class Backtest {
 
     // emit each of the snapshots
     for (const snap of mergedData) {
+      console.log(snap);
       if (this.onDataHandler) await this.onDataHandler(snap);
     }
 
