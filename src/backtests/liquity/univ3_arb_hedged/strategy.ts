@@ -105,7 +105,7 @@ export class HedgedUniswap {
     data: Uni3Snaphot,
   ) {
     this.rebalanceCount++;
-    // console.log('rebalanceDebt', new Date(data.timestamp * 1000).toISOString());
+    console.log('rebalanceDebt', new Date(data.timestamp * 1000).toISOString());
     const pool = this.pool(data);
     const want = pool.tokens[this.tokenIndex].symbol;
     const wantBefore =
@@ -115,7 +115,7 @@ export class HedgedUniswap {
     const totalAssets = this.estTotalAssets(data);
     const mgrClose = await mgr.close(this.pos);
     await aave.close(this.aave);
-    this.idle = totalAssets;
+    // this.idle = totalAssets;
 
     const calcSlippage = () => {
       const { borrow, lend } = this.calcLenderAmounts(totalAssets, data);
@@ -219,11 +219,14 @@ export class HedgedUniswap {
       this.pos.valueUsd = usdLeft;
       this.idle = 0;
     } else {
+      console.log('current claimed : ',this.pos.claimed);
       await this.checkRebalance(uni, aave, data);
     }
 
     if (data.timestamp - this.lastHarvest >= HARVEST_PERIOD) {
+      // this.compound(data, uni);
       await this.harvest(data);
+      // console.log(`this should be 0 always : ${this.claimed}`);
     }
     // always log data
     await this.log(uni, data);
@@ -233,24 +236,45 @@ export class HedgedUniswap {
     const pool = this.pool(data);
     // TODO: Symbol on pool is WETH which leads me to hard code this part,
     // TODO: this logic should change if we are starting with token0 or token1
+    console.log(1);
     const result =
       this.idle +
+      this.pos.claimed +
       this.pos.valueUsd +
       this.aave.lent(pool.tokens[this.tokenIndex].symbol) -
       this.aave.borrowed('WETH') * pool.close;
-    // if (isNaN(result)) {
-    //   console.log('is is nan')
-    //   console.log(this.idle)
-    //   console.log(this.pos.valueUsd)
-    //   console.log(this.aave.lent(pool.tokens[this.tokenIndex].symbol))
-    //   process.exit()
-    // }
+    if (isNaN(result)) {
+      console.log('is is nan')
+      console.log(this.idle)
+      console.log(this.pos.valueUsd)
+      console.log(this.aave.lent(pool.tokens[this.tokenIndex].symbol))
+      process.exit()
+    }
     return result;
   }
 
   private async harvest(data: Uni3Snaphot) {
     this.claimed = this.pos.claimed;
     this.lastHarvest = data.timestamp;
+  }
+
+  private compound(
+    data: Uni3Snaphot,
+    mgr: UniV3PositionManager
+  ) {
+    const valueUsd = this.pos.valueUsd;
+    const minRange = this.pos.minRange;
+    const maxRange = this.pos.maxRange;
+    this.pos = mgr.open(
+      valueUsd + this.idle,
+      minRange,
+      maxRange,
+      this.priceToken,
+      this.poolSymbol
+    )
+
+    this.pos.valueUsd = this.idle + valueUsd;
+    this.idle = 0;
   }
 
   private apy(data: Uni3Snaphot) {
@@ -282,6 +306,8 @@ export class HedgedUniswap {
       return;
     }
     this.highest = this.highest < totalAssets ? totalAssets : this.highest;
+    console.log(this.highest);
+    console.log(totalAssets);
     const drawdown = -(this.highest - totalAssets) / this.highest;
     const { tokens: _t, prices: _p, reserves: _r, ...poolSnap } = pool as any;
     this.maxDrawdown = Math.max(this.maxDrawdown, -drawdown);

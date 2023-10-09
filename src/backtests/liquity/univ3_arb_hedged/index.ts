@@ -14,10 +14,18 @@ const main = async () => {
         pairs: [USDCWETH],
       },
     },
+    {
+      chain: 'arbitrum',
+      protocol: 'aave',
+      resoution: '1h',
+      config: {
+        pools: ['USDC', 'WETH'],
+      }
+    }
   ];
 
   const bt = await Backtest.create(
-    new Date('2023-01-01'),
+    new Date('2023-09-01'),
     // new Date('2023-01-05'),
     new Date(), // Now
     sources,
@@ -28,7 +36,6 @@ const main = async () => {
   bt.onBefore(strategy.before.bind(strategy));
   bt.onData(strategy.onData.bind(strategy));
   bt.onAfter(strategy.after.bind(strategy));
-
   // Run
   await bt.run();
 };

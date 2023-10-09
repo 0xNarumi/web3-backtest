@@ -18,10 +18,10 @@ export class HedgedUniswapStrategyRunner {
             const n = i + 1;
             return {
               initialInvestment: 100_000,
-              name: `#${n}: Camelotv3 WETH/USDC ${n * 5}% | debt ratio : ${
+              name: `#${n}: Uniswap V3 WETH/USDC ${n * 5}% | debt ratio : ${
                 (j + 1) * 2.5
               }% | slippage : ${(k + 1) * 0.1}%`,
-              pool: 'Camelotv3 WETH/USDC 0%',
+              pool: 'Univ3 WETH/USDC 0.05%',
               rangeSpread: 0.05 * n,
               priceToken: 0,
               collatRatio: 0.6,
@@ -63,11 +63,11 @@ export class HedgedUniswapStrategyRunner {
       );
       console.log(summary);
       const csv = stringify(summary, { header: true });
-      fs.writeFile('./camelotv3_hedged.csv', csv);
+      fs.writeFile('./univ3_hedged.csv', csv);
   
       const series = this.strategies.map((s) => s.series).flat();
       const seriesCsv = stringify(series, { header: true });
-      fs.writeFile('./camelotv3_hedged_series.csv', seriesCsv);
+      fs.writeFile('./univ3_hedged_series.csv', seriesCsv);
   
       await Summary.writePoints(
         summary.map((s, i) => {

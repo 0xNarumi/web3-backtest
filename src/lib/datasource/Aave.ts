@@ -42,7 +42,7 @@ export class AaveDataSource implements DataSource<AaveSnapshot> {
     this.id = info.id || 'aave';
     this.poolSymbols = info.config.pools;
     const url =
-      'https://data.staging.arkiver.net/robolabs/aave-hourly-data/graphql';
+      'https://data.staging.arkiver.net/robolabs/aave-multichain/graphql';
     this.client = new GraphQLClient(url, { headers: {} });
   }
 
