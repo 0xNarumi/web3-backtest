@@ -12,6 +12,19 @@ export class HedgedUniswapStrategyRunner {
     private lender = new AAVEPositionManager();
     private strategies: HedgedUniswap[] = [];
     constructor() {
+      // const strategies = [{
+      //   initialInvestment: 100_000,
+      //   name: `#1: Uniswap V3 WETH/USDC 5% | debt ratio : ${
+      //     2.5
+      //   }% | slippage : 0.1%`,
+      //   pool: 'Univ3 WETH/USDC 0.05%',
+      //   rangeSpread: 0.05,
+      //   priceToken: 0,
+      //   collatRatio: 0.6,
+      //   debtRatioRange: 0.025,
+      //   fixedSlippage: 0.001,
+
+      // }]
       const strategies = Array.from(Array(5).keys()).flatMap((i) => {
         return Array.from(Array(5).keys()).flatMap((j) => {
           return Array.from(Array(1).keys()).flatMap((k) => {

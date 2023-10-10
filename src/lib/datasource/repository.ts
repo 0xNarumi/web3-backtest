@@ -20,7 +20,7 @@ export const DataSourcesRepo: DataSourceEntry[] = [
     chain: 'arbitrum',
     protocol: 'aave',
     resoution: '1h',
-    createSource: AaveArbitrumDataSource.create,
+    createSource: AaveDataSource.create,
   },
   {
     chain: 'arbitrum',

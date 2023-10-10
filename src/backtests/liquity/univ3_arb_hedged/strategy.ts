@@ -171,6 +171,8 @@ export class HedgedUniswap {
     data: Uni3Snaphot,
   ) {
     const debtRatio = this.calcDebtRatio(mgr, this.pos, data);
+    // console.log(`eth price : ${this.pool(data).close}`);
+    // console.log(`debtRatio : ${debtRatio}`);
     if (
       debtRatio > 1 + this.debtRatioRange ||
       debtRatio < 1 - this.debtRatioRange
@@ -219,7 +221,7 @@ export class HedgedUniswap {
       this.pos.valueUsd = usdLeft;
       this.idle = 0;
     } else {
-      console.log('current claimed : ',this.pos.claimed);
+      // console.log('current claimed : ',this.pos.claimed);
       await this.checkRebalance(uni, aave, data);
     }
 
@@ -236,7 +238,6 @@ export class HedgedUniswap {
     const pool = this.pool(data);
     // TODO: Symbol on pool is WETH which leads me to hard code this part,
     // TODO: this logic should change if we are starting with token0 or token1
-    console.log(1);
     const result =
       this.idle +
       this.pos.claimed +
@@ -306,8 +307,8 @@ export class HedgedUniswap {
       return;
     }
     this.highest = this.highest < totalAssets ? totalAssets : this.highest;
-    console.log(this.highest);
-    console.log(totalAssets);
+    // console.log(this.highest);
+    // console.log(totalAssets);
     const drawdown = -(this.highest - totalAssets) / this.highest;
     const { tokens: _t, prices: _p, reserves: _r, ...poolSnap } = pool as any;
     this.maxDrawdown = Math.max(this.maxDrawdown, -drawdown);

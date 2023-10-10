@@ -38,3 +38,5 @@ build/
 # Docker Volumes
 influx/
 data/
+
+*.csv

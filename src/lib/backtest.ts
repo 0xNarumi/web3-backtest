@@ -156,7 +156,6 @@ export class Backtest {
         data: Object.assign({}, ...data),
       };
     });
-
     console.log('running backtest... 🏃‍♂️');
     // emit each of the snapshots
     for (const snap of mergedData) {
